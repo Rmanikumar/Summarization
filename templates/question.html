@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Question Answering System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .answer {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Question Answering System</h1>
+        <form id="questionForm">
+            <div class="form-group">
+                <label for="questionInput">Ask your question:</label>
+                <input type="text" class="form-control" id="questionInput" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <div id="answerContainer" class="answer" style="display:none;">
+            <h3>Answer:</h3>
+            <p id="answerText"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('questionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const question = document.getElementById('questionInput').value;
+
+            fetch('/ask_question', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: question })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('answerText').innerText = data.answer;
+                document.getElementById('answerContainer').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('answerText').innerText = 'An error occurred. Please try again.';
+                document.getElementById('answerContainer').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
